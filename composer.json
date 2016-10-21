@@ -1,0 +1,20 @@
+{
+    "name": "fritool/ambassador-php-api",
+    "description": "Ambassador API Wrapper",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Anatoly Skornyakov",
+            "email": "anatoly@skornyakov.net"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "AmbassadorApi\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.0",
+        "guzzlehttp/guzzle": "^6.2"
+    }
+}

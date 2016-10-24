@@ -45,12 +45,12 @@ class Commission extends ResourceAbstract
 
     public function getRemoteCustomerEmail(): string
     {
-        return $this->getRawData()->remote_customer_email;
+        return strval($this->getRawData()->remote_customer_email);
     }
 
     public function getAffiliateEmail(): string
     {
-        return $this->getRawData()->affiliate_email;
+        return strval($this->getRawData()->affiliate_email);
     }
 
     public function getRevenueAmount(): float
@@ -70,7 +70,7 @@ class Commission extends ResourceAbstract
 
     public function getTransactionId(): string
     {
-        return $this->getRawData()->transaction_id;
+        return strval($this->getRawData()->transaction_id);
     }
 
     /**

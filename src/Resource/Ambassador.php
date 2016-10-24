@@ -219,7 +219,11 @@ class Ambassador extends ResourceAbstract
     public function _load()
     {
         if (!$this->_isLoaded) {
-            $this->setRawData($this->getProxy()->getAmbassadorByEmail($this->getEmail()));
+            $data = $this->getProxy()->getAmbassadorByEmail($this->getEmail());
+            $this->setRawData($data->ambassador);
+            if (isset($data->referring_ambassador)) {
+                $this->setReferringAmbassador(new Ambassador($data->referring_ambassador, $this->getProxy()));
+            }
             $this->_isLoaded = true;
         }
     }

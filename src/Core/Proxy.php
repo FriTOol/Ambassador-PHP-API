@@ -46,7 +46,7 @@ class Proxy
 
     public function getAmbassador(array $params)
     {
-        return $this->_callApi('ambassador/get/', $params);
+        return $this->_callApi('ambassador/stats/', $params);
     }
 
     public function getAmbassadorByEmail(string $email)

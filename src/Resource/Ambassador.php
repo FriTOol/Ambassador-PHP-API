@@ -30,7 +30,9 @@ class Ambassador extends ResourceAbstract
 
     public function getId()
     {
-        return $this->getRawData()->uid;
+        $this->_load();
+
+        return $this->getRawData()->platform_id;
     }
 
     public function getFirstName(): string

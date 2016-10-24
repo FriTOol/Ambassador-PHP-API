@@ -89,6 +89,11 @@ class Proxy
         return $this->_callApi('company/get/');
     }
 
+    public function getCommissions(array $params = [])
+    {
+        return $this->_callApi('commission/all/', $params);
+    }
+
     private function _callApi(string $method, array $params = [])
     {
         try {

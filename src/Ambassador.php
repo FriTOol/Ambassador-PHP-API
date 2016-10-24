@@ -11,6 +11,7 @@ namespace AmbassadorApi;
 use AmbassadorApi\Core\Proxy;
 use AmbassadorApi\Resource\Ambassador as AmbassadorResource;
 use AmbassadorApi\Resource\Collection\AmbassadorCollection;
+use AmbassadorApi\Resource\Collection\CommissionCollection;
 use AmbassadorApi\Resource\Collection\GroupCollection;
 use AmbassadorApi\Resource\Company;
 
@@ -66,5 +67,12 @@ class Ambassador
     public function getCompany()
     {
         return new Company($this->getProxy()->getCompany(), $this->getProxy());
+    }
+
+    public function getCommissions(array $params = [])
+    {
+        $data = $this->getProxy()->getCommissions($params);
+
+        return new CommissionCollection($data->commissions, $this->getProxy());
     }
 }

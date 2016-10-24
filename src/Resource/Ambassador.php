@@ -223,7 +223,7 @@ class Ambassador extends ResourceAbstract
         if (!$this->_isLoaded) {
             $data = $this->getProxy()->getAmbassadorByEmail($this->getEmail());
             $this->setRawData($data->ambassador);
-            if (isset($data->referring_ambassador)) {
+            if (isset($data->referring_ambassador) && !is_null($data->referring_ambassador->email)) {
                 $this->setReferringAmbassador(new Ambassador($data->referring_ambassador, $this->getProxy()));
             }
             $this->_isLoaded = true;

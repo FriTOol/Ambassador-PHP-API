@@ -179,6 +179,9 @@ class Ambassador extends ResourceAbstract
 
     public function getCampaignLinks(): CampaignLinkCollection
     {
+        if (!isset($this->getRawData()->campaign_links)) {
+            return new CampaignLinkCollection([], $this->getProxy());
+        }
         if (is_null($this->_campaignLinks)) {
             $this->_campaignLinks = new CampaignLinkCollection($this->getRawData()->campaign_links, $this->getProxy());
         }
@@ -223,7 +226,11 @@ class Ambassador extends ResourceAbstract
     public function getGroups(): GroupCollection
     {
         if (is_null($this->_groups)) {
-            $this->_groups = new GroupCollection($this->getProxy()->getGroupsByIds($this->getGroupIds())->groups, $this->getProxy());
+            if (isset($this->getGroupIds()->groups)) {
+                $this->_groups = new GroupCollection($this->getProxy()->getGroupsByIds($this->getGroupIds())->groups, $this->getProxy());
+            } else {
+                $this->_groups = new GroupCollection([], $this->getProxy());
+            }
         }
 
         return $this->_groups;

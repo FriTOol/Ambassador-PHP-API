@@ -218,8 +218,7 @@ class Ambassador extends ResourceAbstract
 
     public function _load()
     {
-        if (!$this->_isLoaded)
-        {
+        if (!$this->_isLoaded) {
             $this->setRawData($this->getProxy()->getAmbassadorByEmail($this->getEmail()));
             $this->_isLoaded = true;
         }

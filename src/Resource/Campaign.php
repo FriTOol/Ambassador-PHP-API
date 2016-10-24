@@ -10,7 +10,7 @@ namespace AmbassadorApi\Resource;
 
 class Campaign extends ResourceAbstract
 {
-    public function getUid(): string
+    public function getId(): string
     {
         return $this->getRawData()->campaign_uid;
     }

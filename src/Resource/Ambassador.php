@@ -179,6 +179,8 @@ class Ambassador extends ResourceAbstract
 
     public function getCampaignLinks(): CampaignLinkCollection
     {
+        $this->_load();
+
         if (!isset($this->getRawData()->campaign_links)) {
             return new CampaignLinkCollection([], $this->getProxy());
         }

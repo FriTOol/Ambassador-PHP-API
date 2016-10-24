@@ -28,7 +28,7 @@ class Ambassador extends ResourceAbstract
      */
     private $_groups;
 
-    public function getUid()
+    public function getId()
     {
         return $this->getRawData()->uid;
     }
@@ -83,7 +83,7 @@ class Ambassador extends ResourceAbstract
         return $this->getRawData()->memorable_url;
     }
 
-    public function getIniqueReferrals(): int
+    public function getUniqueReferrals(): int
     {
         return intval($this->getRawData()->unique_referrals);
     }

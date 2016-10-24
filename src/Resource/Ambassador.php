@@ -135,6 +135,10 @@ class Ambassador extends ResourceAbstract
 
     public function getGroupIds(): array
     {
+        if (!isset($this->getRawData()->groups)) {
+            return [];
+        }
+
         return explode(',', $this->getRawData()->groups);
     }
 

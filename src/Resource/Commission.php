@@ -73,9 +73,12 @@ class Commission extends ResourceAbstract
         return $this->getRawData()->transaction_id;
     }
 
-    public function isApproved(): bool
+    /**
+     * @return int 0 - pending, 1 - approved, 2 - denied
+     */
+    public function getStatus(): int
     {
-        return $this->getRawData()->is_approved == '1';
+        return intval($this->getRawData()->is_approved);
     }
 
     public function isSandbox(): bool

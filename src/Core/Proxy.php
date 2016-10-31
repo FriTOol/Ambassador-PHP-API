@@ -105,6 +105,18 @@ class Proxy
         return $this->_getApi('commission/all/', $params);
     }
 
+    public function createEvent(array $data)
+    {
+        if (!isset($data['email']) && empty($data['email']) &&
+            !isset($data['campaign_uid']) && empty($data['campaign_uid']) &&
+            !isset($data['product_id']) && empty($data['product_id'])
+        ) {
+            throw new RequiredParamException('Email, campaign_uid or product_id is required.');
+        }
+
+        $this->_postApi('event/record/', $data);
+    }
+
     private function _getApi(string $url, array $query = [])
     {
         return $this->_callApi('get', $url, ['query' => $query]);

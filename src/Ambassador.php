@@ -78,6 +78,11 @@ class Ambassador
 
     public function updateAmbassador(array $data)
     {
-        return $this->getProxy()->updateAmbassador($data);
+        $this->getProxy()->updateAmbassador($data);
+    }
+
+    public function createEvent(array $data)
+    {
+        $this->getProxy()->createEvent($data);
     }
 }

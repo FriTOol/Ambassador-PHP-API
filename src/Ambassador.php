@@ -75,4 +75,9 @@ class Ambassador
 
         return new CommissionCollection($data->commissions, $this->getProxy());
     }
+
+    public function updateAmbassador(array $data)
+    {
+        return $this->getProxy()->updateAmbassador($data);
+    }
 }

@@ -30,19 +30,44 @@ class Ambassador extends ResourceAbstract
 
     public function getId()
     {
+        if (!isset($this->_updatedData['new_uid'])) {
+            return $this->_updatedData['new_uid'];
+        }
+
         $this->_load();
 
         return $this->getRawData()->platform_id;
     }
 
+    public function setId($id): Ambassador
+    {
+        $this->_updatedData['new_uid'] = $id;
+
+        return $this;
+    }
+
     public function getFirstName(): string
     {
-        return strval($this->getRawData()->first_name);
+        return $this->_getData('first_name');
+    }
+
+    public function setFirstName(string $firstName): Ambassador
+    {
+        $this->_updatedData['first_name'] = $firstName;
+
+        return $this;
     }
 
     public function getLastName(): string
     {
-        return strval($this->getRawData()->last_name);
+        return $this->_getData('last_name');
+    }
+
+    public function setLastName(string $lastName): Ambassador
+    {
+        $this->_updatedData['last_name'] = $lastName;
+
+        return $this;
     }
 
     public function getFullName(): string
@@ -52,12 +77,26 @@ class Ambassador extends ResourceAbstract
 
     public function getEmail(): string
     {
-        return $this->getRawData()->email;
+        return $this->_getData('email');
+    }
+
+    public function setEmail(string $email): Ambassador
+    {
+        $this->_updatedData['new_email'] = $email;
+
+        return $this;
     }
 
     public function getPaypalEmail(): string
     {
-        return $this->getRawData()->paypal_email;
+        return $this->_getData('paypal_email');
+    }
+
+    public function setPaypalEmail(string $paypalEmail): Ambassador
+    {
+        $this->_updatedData['paypal_email'] = $paypalEmail;
+
+        return $this;
     }
 
     public function getBalanceMoney(): float
@@ -149,9 +188,24 @@ class Ambassador extends ResourceAbstract
         return $this->getRawData()->street;
     }
 
+    public function setStreet(string $street): Ambassador
+    {
+        $this->_updatedData['street'] = $street;
+
+        return $this;
+    }
+
     public function getCity(): string
     {
         return $this->getRawData()->city;
+    }
+
+
+    public function setCity(string $city): Ambassador
+    {
+        $this->_updatedData['city'] = $city;
+
+        return $this;
     }
 
     public function getState(): string
@@ -159,9 +213,23 @@ class Ambassador extends ResourceAbstract
         return $this->getRawData()->state;
     }
 
+    public function setState(string $state): Ambassador
+    {
+        $this->_updatedData['state'] = $state;
+
+        return $this;
+    }
+
     public function getZip(): string
     {
         return $this->getRawData()->zip;
+    }
+
+    public function setZip(string $zip): Ambassador
+    {
+        $this->_updatedData['zip'] = $zip;
+
+        return $this;
     }
 
     public function getCountry(): string
@@ -169,14 +237,35 @@ class Ambassador extends ResourceAbstract
         return $this->getRawData()->country;
     }
 
+    public function setCountry(string $country): Ambassador
+    {
+        $this->_updatedData['country'] = $country;
+
+        return $this;
+    }
+
     public function getPhone(): string
     {
         return $this->getRawData()->phone;
     }
 
+    public function setPhone(string $phone): Ambassador
+    {
+        $this->_updatedData['phone'] = $phone;
+
+        return $this;
+    }
+
     public function getCompany(): string
     {
         return $this->getRawData()->company;
+    }
+
+    public function setCompany(string $company): Ambassador
+    {
+        $this->_updatedData['company'] = $company;
+
+        return $this;
     }
 
     public function getCampaignLinks(): CampaignLinkCollection
@@ -241,5 +330,26 @@ class Ambassador extends ResourceAbstract
         }
 
         return $this->_groups;
+    }
+
+    public function setSendWelcomeEmail(bool $isSend): Ambassador
+    {
+        $this->_updatedData['send_welcome_email'] = $isSend ? '1' : '0';
+
+        return $this;
+    }
+
+    public function setIsDeactivated(bool $isDeactivated): Ambassador
+    {
+        $this->_updatedData['is_deactivated'] = $isDeactivated ? '1' : '0';
+
+        return $this;
+    }
+
+    public function save()
+    {
+        $data = $this->_updatedData;
+        $data['email'] = $this->getRawData()->email;
+        $this->getProxy()->updateAmbassador($data);
     }
 }

@@ -10,8 +10,8 @@ namespace AmbassadorApi\Core;
 
 use AmbassadorApi\Exception\AmbassadorNotFoundException;
 use AmbassadorApi\Exception\InternalServerErrorException;
-use AmbassadorApi\Exception\NotFound;
 use AmbassadorApi\Exception\NotFoundException;
+use AmbassadorApi\Exception\RequiredParamException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 
@@ -41,12 +41,12 @@ class Proxy
 
     public function getAmbassadors(array $params = [])
     {
-        return $this->_callApi('ambassador/all/', $params);
+        return $this->_getApi('ambassador/all/', $params);
     }
 
     public function getAmbassador(array $params)
     {
-        return $this->_callApi('ambassador/stats/', $params);
+        return $this->_getApi('ambassador/stats/', $params);
     }
 
     public function getAmbassadorByEmail(string $email)
@@ -61,9 +61,20 @@ class Proxy
         }
     }
 
+    public function updateAmbassador(array $data)
+    {
+        if (!isset($data['email']) && empty($data['email']) &&
+            !isset($data['uid']) && empty($data['uid'])
+        ) {
+            throw new RequiredParamException('Email or uid is required.');
+        }
+
+        $this->_postApi('ambassador/update/', $data);
+    }
+
     public function getGroups()
     {
-        return $this->_callApi('group/all/');
+        return $this->_getApi('group/all/');
     }
 
     public function getGroupsByIds($groupIds)
@@ -81,23 +92,33 @@ class Proxy
 
     public function getGroup($groupId)
     {
-        return $this->_callApi('group/get/', ['group_id' => $groupId]);
+        return $this->_getApi('group/get/', ['group_id' => $groupId]);
     }
 
     public function getCompany()
     {
-        return $this->_callApi('company/get/');
+        return $this->_getApi('company/get/');
     }
 
     public function getCommissions(array $params = [])
     {
-        return $this->_callApi('commission/all/', $params);
+        return $this->_getApi('commission/all/', $params);
     }
 
-    private function _callApi(string $method, array $params = [])
+    private function _getApi(string $url, array $query = [])
+    {
+        return $this->_callApi('get', $url, ['query' => $query]);
+    }
+
+    private function _postApi(string $url, array $formParam = [])
+    {
+        return $this->_callApi('post', $url, ['form_params' => $formParam]);
+    }
+
+    private function _callApi(string $method, string $url, array $params = [])
     {
         try {
-            $response = $this->_httpClient->get($method, ['query' => $params]);
+            $response = $this->_httpClient->request($method, $url, $params);
         } catch (ClientException $exception) {
             $data = json_decode($exception->getResponse()->getBody()->getContents());
             switch (intval($data->response->code)) {

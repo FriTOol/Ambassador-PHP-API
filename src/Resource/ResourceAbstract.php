@@ -15,6 +15,8 @@ abstract class ResourceAbstract
 {
     use ProxyTrait, ResourceRawDataTrait;
 
+    protected $_updatedData = [];
+
     protected $_isLoaded = false;
 
     public function __construct($rawData, Proxy $proxy, bool $isLoaded = false)
@@ -24,8 +26,12 @@ abstract class ResourceAbstract
         $this->_isLoaded = $isLoaded;
     }
 
-    public function save()
+    protected function _getData(string $name)
     {
+        if (!isset($this->_updatedData[$name])) {
+            return $this->_updatedData[$name];
+        }
 
+        return $this->getRawData()->$name;
     }
 }

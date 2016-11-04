@@ -22,19 +22,25 @@ class Proxy
     /**
      * @var string
      */
-    private $_apiUsername = '';
+    private $_apiUsername;
 
     /**
      * @var string
      */
-    private $_apiKey = '';
+    private $_apiKey;
+
+    /**
+     * @var string
+     */
+    private $_domain;
 
     private $_httpClient;
 
-    public function __construct(string $username, string $key, array $configs = [])
+    public function __construct(string $username, string $key, string $domain, array $configs = [])
     {
         $this->_apiUsername = $username;
         $this->_apiKey = $key;
+        $this->_domain = $domain;
         $configs['http_client']['base_uri'] = sprintf(self::BASE_URL, $this->_apiUsername, $this->_apiKey);
         $this->_httpClient = new Client($configs['http_client']);
     }
@@ -115,6 +121,31 @@ class Proxy
         }
 
         $this->_postApi('event/record/', $data);
+    }
+
+    public function getCompanyToken()
+    {
+        return $this->_getApi('company/token')->token;
+    }
+
+    public function getSsoLoginUrl(string $email): string
+    {
+        $token     = $this->getCompanyToken();
+        $signature = sha1($this->_apiKey . $email);
+
+        $query = [
+            'token'     => $token,
+            'email'     => $email,
+            'signature' => $signature,
+        ];
+
+        $url = sprintf(
+            '%s/sso/login/?%s',
+            trim($this->_domain, ' /'),
+            \GuzzleHttp\Psr7\build_query($query)
+        );
+
+        return $url;
     }
 
     private function _getApi(string $url, array $query = [])

@@ -29,10 +29,10 @@ class Ambassador
         ]
     ];
 
-    public function __construct(string $username, string $key, array $configs = [])
+    public function __construct(string $username, string $key, string $domain, array $configs = [])
     {
         $configs = array_merge($this->_defaultConfigs, $configs);
-        $this->_proxy = new Proxy($username, $key, $configs);
+        $this->_proxy = new Proxy($username, $key, $domain, $configs);
     }
 
     public function getProxy(): Proxy
@@ -84,5 +84,15 @@ class Ambassador
     public function createEvent(array $data)
     {
         $this->getProxy()->createEvent($data);
+    }
+
+    public function getCompanyToken(): string
+    {
+        return $this->getProxy()->getCompanyToken();
+    }
+
+    public function getSsoLoginUrl(string $email): string
+    {
+        return $this->getProxy()->getSsoLoginUrl($email);
     }
 }

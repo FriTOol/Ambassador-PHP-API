@@ -28,7 +28,7 @@ abstract class ResourceAbstract
 
     protected function _getData(string $name)
     {
-        if (!isset($this->_updatedData[$name])) {
+        if (isset($this->_updatedData[$name])) {
             return $this->_updatedData[$name];
         }
 

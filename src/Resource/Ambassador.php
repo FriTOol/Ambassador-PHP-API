@@ -30,7 +30,7 @@ class Ambassador extends ResourceAbstract
 
     public function getId()
     {
-        if (!isset($this->_updatedData['new_uid'])) {
+        if (isset($this->_updatedData['new_uid'])) {
             return $this->_updatedData['new_uid'];
         }
 

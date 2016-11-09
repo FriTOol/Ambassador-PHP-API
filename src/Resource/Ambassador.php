@@ -367,17 +367,21 @@ class Ambassador extends ResourceAbstract
         $data = array_merge($this->_updatedData, $additionalData);
         $data['email'] = $data['new_email'];
 
-        $links = $this->getReferringAmbassador()->getCampaignLinks();
+        if ($this->hasReferring()) {
+            $links = $this->getReferringAmbassador()->getCampaignLinks();
 
-        /** @var CampaignLink $link */
-        foreach ($links as $link) {
-            if ($link->getCampaign()->getId() == $data['campaign_uid']) {
-                $data['short_code'] = $link->getShortCode();
-                break;
+            /** @var CampaignLink $link */
+            foreach ($links as $link) {
+                if ($link->getCampaign()->getId() == $data['campaign_uid']) {
+                    $data['short_code'] = $link->getShortCode();
+                    break;
+                }
             }
-        }
 
-        $this->getProxy()->createEvent($data);
+            $this->getProxy()->createEvent($data);
+        } else {
+            $this->getProxy()->getAmbassadorByEmail($data['email'], $data);
+        }
 
         if (isset($data['paypal_email'])) {
             $this->getProxy()->updateAmbassador([

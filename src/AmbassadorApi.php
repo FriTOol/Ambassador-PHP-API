@@ -15,7 +15,7 @@ use AmbassadorApi\Resource\Collection\CommissionCollection;
 use AmbassadorApi\Resource\Collection\GroupCollection;
 use AmbassadorApi\Resource\Company;
 
-class Ambassador
+class AmbassadorApi
 {
     /**
      * @var Proxy
@@ -46,9 +46,9 @@ class Ambassador
         return new AmbassadorCollection($data->ambassadors, $this->getProxy());
     }
 
-    public function getAmbassadorByEmail(string $email)
+    public function getStatsAmbassadorByEmail(string $email, array $params = [])
     {
-        $data = $this->getProxy()->getAmbassadorByEmail($email);
+        $data = $this->getProxy()->getStatsAmbassadorByEmail($email, $params);
 
         $ambassadorResource = new AmbassadorResource($data->ambassador, $this->getProxy(), true);
         if (!is_null($data->referring_ambassador) && !is_null($data->referring_ambassador->email)) {
@@ -56,6 +56,28 @@ class Ambassador
         }
 
         return $ambassadorResource;
+    }
+
+    public function getAmbassadorByEmail(string $email, array $params = [])
+    {
+        $data = $this->getProxy()->getAmbassadorByEmail($email, $params);
+
+        $ambassadorResource = new AmbassadorResource($data->ambassador, $this->getProxy(), true);
+        if (!is_null($data->referring_ambassador) && !is_null($data->referring_ambassador->email)) {
+            $ambassadorResource->setReferringAmbassador(new AmbassadorResource($data->referring_ambassador, $this->getProxy()));
+        }
+
+        return $ambassadorResource;
+    }
+
+    public function createNewAmbassador()
+    {
+        return new AmbassadorResource([], $this->getProxy());
+    }
+
+    public function getOrCreateAmbassador(array $data)
+    {
+
     }
 
     public function getGroups()

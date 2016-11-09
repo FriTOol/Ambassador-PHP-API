@@ -50,18 +50,37 @@ class Proxy
         return $this->_getApi('ambassador/all/', $params);
     }
 
-    public function getAmbassador(array $params)
+    public function getStatsAmbassador(array $params)
     {
         return $this->_getApi('ambassador/stats/', $params);
     }
 
-    public function getAmbassadorByEmail(string $email)
+    public function getAmbassador(array $params)
     {
+        return $this->_getApi('ambassador/get/', $params);
+    }
+
+    public function getStatsAmbassadorByEmail(string $email, array $params = [])
+    {
+        $params['email'] = $email;
         try {
-            return $this->getAmbassador(['email' => $email]);
+            return $this->getStatsAmbassador($params);
         } catch (NotFoundException $exception) {
             throw new AmbassadorNotFoundException(
-                sprintf('Ambassador with email "%s" not found.', $email),
+                sprintf('AmbassadorApi with email "%s" not found.', $email),
+                $exception->getCode()
+            );
+        }
+    }
+
+    public function getAmbassadorByEmail(string $email, array $params = [])
+    {
+        $params['email'] = $email;
+        try {
+            return $this->getAmbassador($params);
+        } catch (NotFoundException $exception) {
+            throw new AmbassadorNotFoundException(
+                sprintf('AmbassadorApi with email "%s" not found.', $email),
                 $exception->getCode()
             );
         }

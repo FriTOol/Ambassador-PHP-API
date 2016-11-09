@@ -32,6 +32,13 @@ class CampaignLink extends ResourceAbstract
         return $this->getRawData()->url;
     }
 
+    public function getShortCode(): string
+    {
+        $url = explode('/', $this->getUrl());
+
+        return end($url);
+    }
+
     public function getTotalMoneyEarned(): float
     {
         return floatval($this->getRawData()->total_money_earned);

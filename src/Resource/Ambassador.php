@@ -77,7 +77,7 @@ class Ambassador extends ResourceAbstract
 
     public function getEmail(): string
     {
-        return $this->_getData('email');
+        return strval($this->_getData('email'));
     }
 
     public function setEmail(string $email): Ambassador
@@ -227,7 +227,7 @@ class Ambassador extends ResourceAbstract
 
     public function setZip(string $zip): Ambassador
     {
-        $this->_updatedData['zip'] = $zip;
+//        $this->_updatedData['zip'] = $zip;
 
         return $this;
     }
@@ -294,10 +294,14 @@ class Ambassador extends ResourceAbstract
 
     /**
      * @param Ambassador $referringAmbassador
+     *
+     * @return Ambassador
      */
-    public function setReferringAmbassador(Ambassador $referringAmbassador)
+    public function setReferringAmbassador(Ambassador $referringAmbassador): Ambassador
     {
         $this->_referringAmbassador = $referringAmbassador;
+
+        return $this;
     }
 
     public function hasReferring(): bool
@@ -309,8 +313,8 @@ class Ambassador extends ResourceAbstract
 
     public function _load()
     {
-        if (!$this->_isLoaded) {
-            $data = $this->getProxy()->getAmbassadorByEmail($this->getEmail());
+        if (!$this->_isLoaded && !empty($this->getRawData())) {
+            $data = $this->getProxy()->getStatsAmbassadorByEmail($this->getEmail());
             $this->setRawData($data->ambassador);
             if (isset($data->referring_ambassador) && !is_null($data->referring_ambassador->email)) {
                 $this->setReferringAmbassador(new Ambassador($data->referring_ambassador, $this->getProxy()));
@@ -346,10 +350,40 @@ class Ambassador extends ResourceAbstract
         return $this;
     }
 
-    public function save()
+    public function save(array $additionalData = [])
     {
-        $data = $this->_updatedData;
-        $data['email'] = $this->getRawData()->email;
-        $this->getProxy()->updateAmbassador($data);
+        if (!empty($this->getRawData())) {
+            $data = array_merge($this->_updatedData, $additionalData);
+
+            $data['email'] = $this->getRawData()->email;
+            $this->getProxy()->updateAmbassador($data);
+        } else {
+            $this->_create($additionalData);
+        }
+    }
+
+    private function _create(array $additionalData = [])
+    {
+        $data = array_merge($this->_updatedData, $additionalData);
+        $data['email'] = $data['new_email'];
+
+        $links = $this->getReferringAmbassador()->getCampaignLinks();
+
+        /** @var CampaignLink $link */
+        foreach ($links as $link) {
+            if ($link->getCampaign()->getId() == $data['campaign_uid']) {
+                $data['short_code'] = $link->getShortCode();
+                break;
+            }
+        }
+
+        $this->getProxy()->createEvent($data);
+
+        if (isset($data['paypal_email'])) {
+            $this->getProxy()->updateAmbassador([
+                'email'        => $data['email'],
+                'paypal_email' => $data['paypal_email']
+            ]);
+        }
     }
 }
